@@ -1,0 +1,97 @@
+CREATE TABLE categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+    )
+
+CREATE TABLE products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        price REAL NOT NULL,
+        description TEXT,
+        category_id INTEGER NOT NULL,
+        image TEXT,
+        FOREIGN KEY(category_id) REFERENCES categories(id)
+    )
+    
+CREATE TABLE inventory (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        product_id INTEGER NOT NULL,
+        stock INTEGER NOT NULL,
+        FOREIGN KEY(product_id) REFERENCES products(id)
+    ) 
+    
+CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'user'
+    )
+    
+CREATE TABLE carts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    )
+    
+CREATE TABLE cart_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cart_id INTEGER NOT NULL,
+        product_id INTEGER NOT NULL,
+        quantity INTEGER NOT NULL,
+        FOREIGN KEY(cart_id) REFERENCES carts(id),
+        FOREIGN KEY(product_id) REFERENCES products(id)
+    )
+    
+ CREATE TABLE purchases (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        total_amount REAL NOT NULL,
+        purchase_date TEXT NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(id)
+    )
+    
+ CREATE TABLE purchase_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        purchase_id INTEGER NOT NULL,
+        product_id INTEGER NOT NULL,
+        quantity INTEGER NOT NULL,
+        price REAL NOT NULL,
+        FOREIGN KEY(purchase_id) REFERENCES purchases(id),
+        FOREIGN KEY(product_id) REFERENCES products(id)
+    )
+    
+INSERT INTO categories (name) VALUES ('Electronics'),('Books'),('Clothing');
+
+select * FROM categories;
+
+INSERT INTO products (title, price, description, category_id, image) VALUES ('Smartphone', 299.99, 'Latest model with high resolution camera', 1, 'smartphone.jpg')
+,('Laptop', 799.99, 'High-performance laptop for gaming and work', 1, 'laptop.jpg')
+,('JavaScript Book', 29.99, 'Learn JavaScript from scratch', 2, 'js_book.jpg')
+,('T-Shirt', 19.99, 'Comfortable cotton t-shirt', 3, 'tshirt.jpg')
+
+select * FROM products;
+
+INSERT INTO inventory (product_id, stock) VALUES (1, 50),(2, 30),(3, 100),(4, 75);
+
+select * FROM inventory;
+
+INSERT INTO users (username, password, role) VALUES ('user','$2a$10$5nXfMZNb6FyFEHDaG7VwDOrI3NYDSJkgOrhXaThO5MR9GW3uhqQWK','user'),
+('admin','$2a$10$lfd9TEA2HEOdoAWhig7Cg.wsdqqeEH0uPHaFetFVlH4nNTzDEkmfO','admin');
+
+select * FROM users;
+
+INSERT INTO carts (user_id) VALUES (1),(2);
+
+select * FROM carts;
+
+INSERT INTO cart_items (cart_id, product_id, quantity) VALUES (1, 1, 1),(1, 3, 2),(2, 2, 1),(2, 4, 3);
+
+select * FROM cart_items;
+
+INSERT INTO purchases (user_id, total_amount, purchase_date) VALUES (1, 349.97, '2024-08-03'),(2, 819.97, '2024-08-03');
+
+select * FROM purchases;
+
+INSERT INTO purchase_items (purchase_id, product_id, quantity, price) VALUES (1, 1, 1, 299.99),(1, 3, 2, 29.99),(2, 2, 1, 799.99),(2, 4, 3, 19.99);
+
+select * FROM purchase_items;
